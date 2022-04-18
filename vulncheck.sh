@@ -56,7 +56,7 @@ nuclei -list $OUT_DIR/$TARGET/probed.txt -severity low,medium,high, critical -o 
 NUCRES=$(cat vuln.txt | wc -l)
 
 echo "[+] Final results are saved to: $OUT_DIR/$TARGET/vuln.txt"
-echo "[+] Nuclei found ${NUCRES} bugs"
+echo "[+] Nuclei found ${NUCRES} bugs" | notify -silent
 
 
 echo "[+] Launching XSS scan"
