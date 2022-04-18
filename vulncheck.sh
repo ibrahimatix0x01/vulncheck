@@ -59,6 +59,7 @@ echo "[+] Final results are saved to: $OUT_DIR/$TARGET/vuln.txt"
 echo "[+] Nuclei found ${NUCRES} bugs" | notify
 
 echo "[+] Launching XSS scan"
+$OUT_DIR/$TARGET
 mkdir XSS
 cd XSS
 cat $TARGET | waybackurls | gf xss | httpx -silent | uro > waybackurls.txt
