@@ -52,7 +52,7 @@ echo "[+] Output saved to: $OUT_DIR/$TARGET/howtofindbugs.txt"
 cat $OUT_DIR/$TARGET/howtofindbugs.txt | httprobe > $OUT_DIR/$TARGET/probed.txt
 echo "[+] Live subdomains are saved to: $OUT_DIR/$TARGET/probed.txt"
 
-nuclei -list $OUT_DIR/$TARGET/probed.txt -t /root/nuclei-templates/vulnerabilities -o $OUT_DIR/$TARGET/vuln.txt
-nuclei -list $OUT_DIR/$TARGET/probed.txt -t /root/nuclei-templates/cves -o $OUT_DIR/$TARGET/cves.txt
+nuclei -list $OUT_DIR/$TARGET/probed.txt -severity low,medium,high, critical -o $OUT_DIR/$TARGET/vuln.txt
+
 echo "[+] Final results are saved to: $OUT_DIR/$TARGET/"
 exit 0
