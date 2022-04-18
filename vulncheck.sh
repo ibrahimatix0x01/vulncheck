@@ -42,19 +42,21 @@ wait
 
 cd $OUT_DIR
 cd $TARGET
-(cat subscraper.txt sublist3r.txt assetfinder.txt | sort -u) > howtofindbugs.txt
+(cat subscraper.txt sublist3r.txt assetfinder.txt | sort -u) > vulncheck.txt
 rm subscraper.txt sublist3r.txt assetfinder.txt
 
-RES=$(cat howtofindbugs.txt | wc -l)
-echo -e "\n[+] VulnCheck complete with ${RES} results"
-echo "[+] Output saved to: $OUT_DIR/$TARGET/howtofindbugs.txt"
+RES=$(cat vulncheck.txt | wc -l)
+echo -e "\n[+] VulnCheck complete with ${RES} subdomains" | notify
+echo "[+] Output are saved to: $OUT_DIR/$TARGET/vulncheck.txt"
 
-cat $OUT_DIR/$TARGET/howtofindbugs.txt | httprobe > $OUT_DIR/$TARGET/probed.txt
-echo "[+] Live subdomains are saved to: $OUT_DIR/$TARGET/probed.txt"
+cat $OUT_DIR/$TARGET/vulncheck.txt | httprobe > $OUT_DIR/$TARGET/probed.txt
+echo "[+] Live subdomains are saved to: $OUT_DIR/$TARGET/probed.txt" && cat $OUT_DIR/$TARGET/probed.txt | notify
 
 nuclei -list $OUT_DIR/$TARGET/probed.txt -severity low,medium,high, critical -o $OUT_DIR/$TARGET/vuln.txt
+NUCRES=$(cat vuln.txt | wc -l)
 
 echo "[+] Final results are saved to: $OUT_DIR/$TARGET/vuln.txt"
+echo "[+] Nuclei found ${NUCRES} bugs" | notify
 
 echo "[+] Launching XSS scan"
 mkdir XSS
@@ -66,5 +68,8 @@ cat waybackurls.txt gau.txt | uro | qsreplace '"><img src=x onerror=alert(1);>' 
 cat waybackurls.txt gau.txt | uro | qsreplace '"><svg onload=confirm(1)>' | airixss -payload "confirm(1)" | grep "31m" > airixss.txt
 sudo rm waybackurls.txt
 sudo rm gau.txt
-echo "[+] XSS scan is completed"
+FREQRES=$(cat freq.txt | wc -l)
+echo "[+] FREQ found ${FREQRES} XSS vulnerabilities." | notify
+AIRIXSSRES=$(cat freq.txt | wc -l)
+echo "[+] AIRIXSS found ${AIRIXSSRES} XSS vulnerabilities." | notify
 exit 0
