@@ -26,18 +26,18 @@ echo [*] Executing VulnCheck against: ${TARGET}
 # get the best results. Happy Hunting!
 
 cd $TOOLS_DIR/subscraper
-echo "[*] Launching SubScraper"
+echo "[+] Launching SubScraper"
 python3 subscraper.py $TARGET -o $OUT_DIR/$TARGET/subscraper.txt &> /dev/null &
 
 cd $TOOLS_DIR/Sublist3r
-echo "[*] Launching Sublist3r"
+echo "[+] Launching Sublist3r"
 python3 sublist3r.py -d $TARGET -o $OUT_DIR/$TARGET/sublist3r.txt &> /dev/null &
 
 cd $TOOLS_DIR/assetfinder
-echo "[*] Launching Assetfinder"
+echo "[+] Launching Assetfinder"
 ./assetfinder --subs-only $TARGET > $OUT_DIR/$TARGET/assetfinder.txt &
 
-echo "[*] Waiting until all scripts complete..."
+echo "[+] Waiting until all scripts complete..."
 wait
 
 cd $OUT_DIR
@@ -54,5 +54,17 @@ echo "[+] Live subdomains are saved to: $OUT_DIR/$TARGET/probed.txt"
 
 nuclei -list $OUT_DIR/$TARGET/probed.txt -severity low,medium,high, critical -o $OUT_DIR/$TARGET/vuln.txt
 
-echo "[+] Final results are saved to: $OUT_DIR/$TARGET/"
+echo "[+] Final results are saved to: $OUT_DIR/$TARGET/vuln.txt"
+
+echo "[+] Launching XSS scan"
+mkdir XSS
+cd XSS
+cat $TARGET | waybackurls | gf xss | httpx -silent | uro > waybackurls.txt
+cat $TARGET | gau | gf xss | httpx -silent | uro > gau.txt
+cat waybackurls.txt gau.txt | uro | qsreplace '"><img src=x onerror=alert(1);>' | freq | grep "31m" > freq.txt 
+
+cat waybackurls.txt gau.txt | uro | qsreplace '"><svg onload=confirm(1)>' | airixss -payload "confirm(1)" | grep "31m" > airixss.txt
+sudo rm waybackurls.txt
+sudo rm gau.txt
+echo "[+] XSS scan is completed"
 exit 0
