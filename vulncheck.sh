@@ -56,14 +56,15 @@ nuclei -list $OUT_DIR/$TARGET/probed.txt -severity low,medium,high, critical -o 
 NUCRES=$(cat vuln.txt | wc -l)
 
 echo "[+] Final results are saved to: $OUT_DIR/$TARGET/vuln.txt"
-echo "[+] Nuclei found ${NUCRES} bugs" | notify
+echo "[+] Nuclei found ${NUCRES} bugs" && cat $OUT_DIR/$TARGET/vuln.txt | notify
+
 
 echo "[+] Launching XSS scan"
-$OUT_DIR/$TARGET
+cd $OUT_DIR/$TARGET
 mkdir XSS
 cd XSS
-cat $TARGET | waybackurls | gf xss | httpx -silent | uro > waybackurls.txt
-cat $TARGET | gau | gf xss | httpx -silent | uro > gau.txt
+cat $OUT_DIR/$TARGET/vulncheck.txt | waybackurls | gf xss | httpx -silent | uro > waybackurls.txt
+cat $OUT_DIR/$TARGET/vulncheck.txt | gau | gf xss | httpx -silent | uro > gau.txt
 cat waybackurls.txt gau.txt | uro | qsreplace '"><img src=x onerror=alert(1);>' | freq | grep "31m" > freq.txt 
 
 cat waybackurls.txt gau.txt | uro | qsreplace '"><svg onload=confirm(1)>' | airixss -payload "confirm(1)" | grep "31m" > airixss.txt
