@@ -46,7 +46,7 @@ cd $TARGET
 rm subscraper.txt sublist3r.txt assetfinder.txt
 
 RES=$(cat vulncheck.txt | wc -l)
-echo -e "\n[+] VulnCheck complete with ${RES} subdomains" | notify
+echo -e "\n[+] VulnCheck complete with ${RES} subdomains" | notify -silent
 echo "[+] Output are saved to: $OUT_DIR/$TARGET/vulncheck.txt"
 
 cat $OUT_DIR/$TARGET/vulncheck.txt | httprobe > $OUT_DIR/$TARGET/probed.txt
@@ -71,7 +71,7 @@ cat waybackurls.txt gau.txt | uro | qsreplace '"><svg onload=confirm(1)>' | airi
 sudo rm waybackurls.txt
 sudo rm gau.txt
 FREQRES=$(cat freq.txt | wc -l)
-echo "[+] FREQ found ${FREQRES} XSS vulnerabilities." | notify
+echo "[+] FREQ found ${FREQRES} XSS vulnerabilities." | notify -silent
 AIRIXSSRES=$(cat freq.txt | wc -l)
-echo "[+] AIRIXSS found ${AIRIXSSRES} XSS vulnerabilities." | notify
+echo "[+] AIRIXSS found ${AIRIXSSRES} XSS vulnerabilities." | notify -silent
 exit 0
