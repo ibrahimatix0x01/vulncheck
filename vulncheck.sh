@@ -53,12 +53,11 @@ echo "[+] Output are saved to: $OUT_DIR/$TARGET/vulncheck.txt"
 cat $OUT_DIR/$TARGET/vulncheck.txt | httprobe > $OUT_DIR/$TARGET/probed.txt
 echo "[+] Live subdomains are saved to: $OUT_DIR/$TARGET/probed.txt"
 
-nuclei -list $OUT_DIR/$TARGET/probed.txt -severity low,medium,high, critical -o $OUT_DIR/$TARGET/vuln.txt | notify
+nuclei -list $OUT_DIR/$TARGET/probed.txt -severity low,medium,high, critical -o $OUT_DIR/$TARGET/vuln.txt
 
 NUCRES=$(cat $OUT_DIR/$TARGET/vuln.txt | wc -l)
 
 echo "[+] Final results are saved to: $OUT_DIR/$TARGET/vuln.txt"
-echo "[+] Nuclei found ${NUCRES} bugs" | notify -silent
 echo "[+] Nuclei found ${NUCRES} bugs"
 
 
